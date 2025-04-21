@@ -87,10 +87,14 @@
 <!-- 重複預約 Modal -->
 <div class="modal fade" id="rebookModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow">
   <div class="modal-header bg-warning-subtle"><h5 class="modal-title">⚠️ 已有預約紀錄</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
-  <div class="modal-body"><p id="rebookMessage"></p><div class="text-end">
-    <button class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">保留原預約</button>
-    <button class="btn btn-danger" onclick="confirmRebook()">改為此預約</button>
-  </div></div></div></div>
+  <div class="modal-body">
+    <p id="rebookMessage"></p>
+    <div class="text-end">
+      <button class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">保留原預約</button>
+      <button id="rebookBtn" class="btn btn-danger" onclick="confirmRebook()">改為此預約</button>
+    </div>
+  </div>
+</div></div></div>
 
 <script>
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1zjOuIhqSp5BfQptn43EaLcgP-2Aa8I9FCBDRyOt1NDwdfv4RxedKMWSmaUgjY9FQ8w/exec';
@@ -139,7 +143,7 @@ function initFlatpickr(res) {
     disable: res.disabledDates||[], dateFormat:'Y-m-d',
     locale:{ firstDayOfWeek:1,
       weekdays:{shorthand:['日','一','二','三','四','五','六'], longhand:['星期日','星期一','星期二','星期三','星期四','星期五','星期六']},
-      months:{shorthand:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11월','12月'], longhand:['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']}
+      months:{shorthand:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'], longhand:['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']}
     },
     onChange:([dt])=>{
       const d = dt.toISOString().split('T')[0];
@@ -169,8 +173,8 @@ function submitForm() {
 }
 
 function confirmSubmission() {
-  const btn=document.getElementById('confirmBtn'); btn.disabled=true; btn.innerHTML='<span class="spinner-border spinner-border-sm"></span> 處理中';
-  fetch(`${GAS_URL}?action=submitReservation`, {method:'POST', body:JSON.stringify(formData)})
+  const btn=document.getElementById('confirmBtn'); btn.disabled=true; btn.innerHTML='<span class="spinner-border spinner-border-sm me-2" role="status"></span>處理中';
+  fetch(`{GAS_URL}?action=submitReservation`, {method:'POST', body:JSON.stringify(formData)})
     .then(r=>r.text()).then(msg=>{
       if(msg.includes('已經預約了')) {
         document.getElementById('rebookMessage').innerText=msg;
@@ -181,7 +185,10 @@ function confirmSubmission() {
 }
 
 function confirmRebook() {
-  fetch(`${GAS_URL}?action=forceRebook`, {method:'POST', body:JSON.stringify(formData)})
+  const btn = document.getElementById('rebookBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>處理中';
+  fetch(`{GAS_URL}?action=forceRebook`, {method:'POST', body:JSON.stringify(formData)})
     .then(r=>r.text()).then(msg=>{ alert(msg); location.reload(); });
 }
 </script>
