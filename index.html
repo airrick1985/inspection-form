@@ -3,41 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base target="_top">
   <title>新增驗屋預約</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <style>
-    body {
-      padding: 2rem;
-      font-family: 'Noto Sans TC', sans-serif;
-      background-color: #f8f9fa;
-    }
-    .form-section {
-      background: white;
-      padding: 2rem;
-      border-radius: 0.75rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      max-height: 90vh;
-      overflow-y: auto;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    .form-section::-webkit-scrollbar {
-      display: none;
-    }
-    .form-control[readonly] {
-      background-color: #e9ecef;
-    }
+    body { padding: 2rem; font-family: 'Noto Sans TC', sans-serif; background-color: #f8f9fa; }
+    .form-section { background: white; padding: 2rem; border-radius: 0.75rem; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    .form-section h3 { margin-bottom: 1.5rem; }
+    .form-control[readonly] { background-color: #e9ecef; }
   </style>
 </head>
 <body>
 <div class="container">
+  <!-- 表單區塊 -->
   <div id="form" class="form-section">
     <h3>新增驗屋預約</h3>
-
-    <!-- 基本欄位 -->
     <div class="mb-3">
       <label for="building" class="form-label">棟別</label>
       <select id="building" class="form-select" onchange="loadUnitOptions()">
@@ -50,26 +33,28 @@
         <option value="" disabled selected>請先選擇棟別</option>
       </select>
     </div>
-    <div class="mb-3"><label for="address" class="form-label">門牌</label>
-      <input type="text" id="address" class="form-control" readonly></div>
-    <div class="mb-3"><label for="batch" class="form-label">驗屋批次</label>
-      <input type="text" id="batch" class="form-control" readonly></div>
-    <div class="mb-3"><label for="name" class="form-label">姓名</label>
-      <input type="text" id="name" class="form-control"></div>
-    <div class="mb-3"><label for="phone" class="form-label">電話</label>
-      <input type="text" id="phone" class="form-control"></div>
-    <div class="mb-3"><label for="email" class="form-label">EMAIL</label>
-      <input type="email" id="email" class="form-control"></div>
-
-    <!-- 驗屋相關欄位 -->
-    <div class="mb-3"><label for="inspectionType" class="form-label">驗屋階段</label>
-      <select id="inspectionType" class="form-select">
+    <div class="mb-3">
+      <label for="address" class="form-label">門牌</label>
+      <input type="text" id="address" class="form-control" readonly>
+    </div>
+    <div class="mb-3">
+      <label for="batch" class="form-label">驗屋批次</label>
+      <input type="text" id="batch" class="form-control" readonly>
+      <div class="form-text">請至分戶資料修改</div>
+    </div>
+    <div class="mb-3"><label for="name" class="form-label">姓名</label><input type="text" id="name" class="form-control"></div>
+    <div class="mb-3"><label for="phone" class="form-label">電話</label><input type="text" id="phone" class="form-control"></div>
+    <div class="mb-3"><label for="email" class="form-label">EMAIL</label><input type="email" id="email" class="form-control"></div>
+    <div class="mb-3">
+      <label for="inspectionType" class="form-label">驗屋階段</label>
+      <select id="inspectionType" class="form-select" onchange="updateDateOptions()">
         <option value="" disabled selected>請選擇</option>
         <option value="初驗">初驗</option>
         <option value="複驗">複驗</option>
       </select>
     </div>
-    <div class="mb-3"><label for="inspectionMethod" class="form-label">驗屋方式</label>
+    <div class="mb-3">
+      <label for="inspectionMethod" class="form-label">驗屋方式</label>
       <select id="inspectionMethod" class="form-select">
         <option value="" disabled selected>請選擇</option>
         <option value="屋主自驗">屋主自驗</option>
@@ -78,128 +63,126 @@
         <option value="授權驗屋">授權驗屋</option>
       </select>
     </div>
-    <div class="mb-3"><label for="agencyName" class="form-label">代驗公司名稱</label>
-      <input type="text" id="agencyName" class="form-control"></div>
-    <div class="mb-3"><label for="trusteeName" class="form-label">受託人姓名</label>
-      <input type="text" id="trusteeName" class="form-control"></div>
-    <div class="mb-3"><label for="trusteePhone" class="form-label">受託人電話</label>
-      <input type="text" id="trusteePhone" class="form-control"></div>
-
-    <!-- 預約時間 -->
-    <div class="mb-3"><label for="date" class="form-label">預約日期</label>
-      <input type="text" id="date" class="form-control"></div>
-    <div class="mb-3"><label for="timeslot" class="form-label">預約時段</label>
+    <div class="mb-3"><label for="agencyName" class="form-label">代驗公司名稱</label><input type="text" id="agencyName" class="form-control"></div>
+    <div class="mb-3"><label for="trusteeName" class="form-label">受託人姓名</label><input type="text" id="trusteeName" class="form-control"></div>
+    <div class="mb-3"><label for="trusteePhone" class="form-label">受託人電話</label><input type="text" id="trusteePhone" class="form-control"></div>
+    <div class="mb-3"><label for="date" class="form-label">預約日期</label><input type="text" id="date" class="form-control"></div>
+    <div class="mb-3">
+      <label for="timeslot" class="form-label">預約時段</label>
       <select id="timeslot" class="form-select">
         <option value="" disabled selected>請先選擇日期</option>
       </select>
     </div>
-    <div class="mb-3"><label for="notes" class="form-label">備註</label>
-      <textarea id="notes" class="form-control" rows="3"></textarea></div>
-
-    <!-- 送出 -->
-    <div class="mb-3 text-end">
-      <button class="btn btn-success" onclick="submitForm()">送出</button>
-    </div>
+    <div class="mb-3"><label for="notes" class="form-label">備註</label><textarea id="notes" class="form-control" rows="3"></textarea></div>
+    <div class="mb-3 text-end"><button class="btn btn-success" onclick="submitForm()">送出</button></div>
     <div id="error" class="text-danger"></div>
   </div>
+  <!-- 確認區塊 -->
+  <div id="confirmation" class="form-section" style="display:none">
+    <h3>請確認預約資訊</h3>
+    <div id="confirmData" class="mb-3"></div>
+    <div class="text-end"><button id="confirmBtn" class="btn btn-primary" onclick="confirmSubmission()">確認</button></div>
+  </div>
 </div>
+<!-- 重複預約 Modal -->
+<div class="modal fade" id="rebookModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content shadow">
+  <div class="modal-header bg-warning-subtle"><h5 class="modal-title">⚠️ 已有預約紀錄</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+  <div class="modal-body"><p id="rebookMessage"></p><div class="text-end">
+    <button class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">保留原預約</button>
+    <button class="btn btn-danger" onclick="confirmRebook()">改為此預約</button>
+  </div></div></div></div>
 
 <script>
-const GAS_URL = "https://script.google.com/macros/s/AKfycbx1zjOuIhqSp5BfQptn43EaLcgP-2Aa8I9FCBDRyOt1NDwdfv4RxedKMWSmaUgjY9FQ8w/exec";
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx1zjOuIhqSp5BfQptn43EaLcgP-2Aa8I9FCBDRyOt1NDwdfv4RxedKMWSmaUgjY9FQ8w/exec';
+let formData = {}, allUnitOptions = {};
 
-let allUnitOptions = {};
-
-// 載入棟別
-fetch(GAS_URL + "?action=getAllUnitOptions")
-  .then(res => res.json())
-  .then(data => {
+// 載入棟別清單
+fetch(`${GAS_URL}?action=getAllUnitOptions`)
+  .then(r=>r.json()).then(data=>{
     allUnitOptions = data;
-    const buildingSelect = document.getElementById('building');
-    buildingSelect.innerHTML = '<option value="" disabled selected>請選擇棟別</option>';
-    Object.keys(data).sort().forEach(b => {
-      buildingSelect.innerHTML += `<option value="${b}">${b}</option>`;
-    });
+    const sel = document.getElementById('building');
+    sel.innerHTML = '<option disabled selected>請選擇棟別</option>';
+    Object.keys(data).sort().forEach(b=> sel.innerHTML += `<option value="${b}">${b}</option>`);
   });
 
 function loadUnitOptions() {
-  const building = document.getElementById('building').value;
-  const unitSelect = document.getElementById('unit');
-  unitSelect.innerHTML = '<option value="" disabled selected>請選擇戶別</option>';
-  if (allUnitOptions[building]) {
-    allUnitOptions[building].forEach(unit => {
-      unitSelect.innerHTML += `<option value="${unit}">${unit}</option>`;
-    });
-  }
+  const b = document.getElementById('building').value;
+  const sel = document.getElementById('unit');
+  sel.innerHTML = '<option disabled selected>請選擇戶別</option>';
+  (allUnitOptions[b]||[]).forEach(u=> sel.innerHTML += `<option value="${u}">${u}</option>`);
 }
 
 function loadDefaultData() {
-  const unit = document.getElementById('unit').value;
-  if (!unit) return;
-  fetch(GAS_URL + "?action=getDefaultData&unit=" + unit)
-    .then(res => res.json())
-    .then(data => {
-      document.getElementById('batch').value = data.batch;
-      document.getElementById('name').value = data.name;
-      document.getElementById('phone').value = data.phone;
-      document.getElementById('address').value = data.address;
+  const u = document.getElementById('unit').value; if(!u) return;
+  fetch(`${GAS_URL}?action=getDefaultData&unit=${encodeURIComponent(u)}`)
+    .then(r=>r.json()).then(d=>{
+      document.getElementById('batch').value=d.batch;
+      document.getElementById('name').value=d.name;
+      document.getElementById('phone').value=d.phone;
+      document.getElementById('address').value=d.address;
+      updateDateOptions();
     });
 }
 
-// 初始化日期選擇器
-flatpickr("#date", {
-  dateFormat: "Y-m-d",
-  disableMobile: true
-});
-
-// 綁定日期與驗屋方式變更 → 更新時段
-document.getElementById("date").addEventListener("change", updateTimeslots);
-document.getElementById("inspectionMethod").addEventListener("change", updateTimeslots);
-
-function updateTimeslots() {
-  const date = document.getElementById("date").value;
-  const method = document.getElementById("inspectionMethod").value;
-  if (!date || !method) return;
-  fetch(GAS_URL + "?action=getTimeslotOptions&date=" + date + "&method=" + method)
-    .then(res => res.json())
-    .then(data => {
-      const timeslotSelect = document.getElementById("timeslot");
-      timeslotSelect.innerHTML = '<option value="" disabled selected>請選擇時段</option>';
-      data.forEach(opt => {
-        timeslotSelect.innerHTML += `<option value="${opt.value}" ${opt.disabled ? 'disabled' : ''}>${opt.value}</option>`;
-      });
-    });
+function updateDateOptions() {
+  const u=document.getElementById('unit').value;
+  const t=document.getElementById('inspectionType').value;
+  if(!u||!t) return;
+  fetch(`${GAS_URL}?action=getDateOptions&unit=${encodeURIComponent(u)}&type=${encodeURIComponent(t)}`)
+    .then(r=>r.json()).then(initFlatpickr);
 }
 
-// 表單送出
+function initFlatpickr(res) {
+  const inp=document.getElementById('date'); if(inp._flatpickr) inp._flatpickr.destroy(); inp.disabled=true;
+  flatpickr(inp, {
+    disableMobile:true, minDate:res.startDate, maxDate:res.endDate,
+    disable: res.disabledDates||[], dateFormat:'Y-m-d',
+    locale:{ firstDayOfWeek:1,
+      weekdays:{shorthand:['日','一','二','三','四','五','六'], longhand:['星期日','星期一','星期二','星期三','星期四','星期五','星期六']},
+      months:{shorthand:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11월','12月'], longhand:['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月']}
+    },
+    onChange:([dt])=>{
+      const d = dt.toISOString().split('T')[0];
+      const m = document.getElementById('inspectionMethod').value;
+      fetch(`${GAS_URL}?action=getTimeslotOptions&date=${d}&method=${encodeURIComponent(m)}`)
+        .then(r=>r.json()).then(opts=>{
+          const sel=document.getElementById('timeslot'); sel.innerHTML='<option disabled selected>請選擇時段</option>';
+          opts.forEach(o=> sel.innerHTML+=`<option value="${o.value}" ${o.disabled?'disabled':''}>${o.value}</option>`);
+        });
+    }
+  }); inp.disabled=false;
+}
+
 function submitForm() {
-  const formData = {
-    building: document.getElementById('building').value,
-    unit: document.getElementById('unit').value,
-    batch: document.getElementById('batch').value,
-    name: document.getElementById('name').value,
-    phone: document.getElementById('phone').value,
-    email: document.getElementById('email').value,
-    inspectionType: document.getElementById('inspectionType').value,
-    inspectionMethod: document.getElementById('inspectionMethod').value,
-    agencyName: document.getElementById('agencyName').value,
-    trusteeName: document.getElementById('trusteeName').value,
-    trusteePhone: document.getElementById('trusteePhone').value,
-    date: document.getElementById('date').value,
-    timeslot: document.getElementById('timeslot').value,
-    notes: document.getElementById('notes').value
-  };
+  formData={};
+  ['building','unit','batch','name','phone','email','inspectionType','inspectionMethod','agencyName','trusteeName','trusteePhone','date','timeslot','notes']
+    .forEach(id=> formData[id]=document.getElementById(id).value);
+  if(!formData.building||!formData.unit||!formData.inspectionType||!formData.inspectionMethod||!formData.date||!formData.timeslot) {
+    return document.getElementById('error').innerText='請填寫所有必填欄位！';
+  }
+  document.getElementById('form').style.display='none';
+  document.getElementById('confirmation').style.display='block';
+  const html = ['building','unit','batch','name','phone','email','inspectionType','inspectionMethod','agencyName','trusteeName','trusteePhone','date','timeslot','notes']
+    .map(id=> `<tr><th>${document.querySelector("label[for='"+id+"']").innerText}</th><td>${formData[id]||''}</td></tr>`)
+    .join('');
+  document.getElementById('confirmData').innerHTML=`<table class="table"><tbody>${html}</tbody></table>`;
+}
 
-  fetch(GAS_URL + "?action=submitReservation", {
-    method: "POST",
-    body: JSON.stringify(formData)
-  })
-  .then(res => res.text())
-  .then(msg => {
-    alert(msg);
-  })
-  .catch(err => {
-    document.getElementById('error').innerText = err.message;
-  });
+function confirmSubmission() {
+  const btn=document.getElementById('confirmBtn'); btn.disabled=true; btn.innerHTML='<span class="spinner-border spinner-border-sm"></span> 處理中';
+  fetch(`${GAS_URL}?action=submitReservation`, {method:'POST', body:JSON.stringify(formData)})
+    .then(r=>r.text()).then(msg=>{
+      if(msg.includes('已經預約了')) {
+        document.getElementById('rebookMessage').innerText=msg;
+        new bootstrap.Modal(document.getElementById('rebookModal')).show();
+        btn.disabled=false; btn.innerText='確認';
+      } else { alert(msg); location.reload(); }
+    }).catch(e=> document.getElementById('error').innerText=e.message);
+}
+
+function confirmRebook() {
+  fetch(`${GAS_URL}?action=forceRebook`, {method:'POST', body:JSON.stringify(formData)})
+    .then(r=>r.text()).then(msg=>{ alert(msg); location.reload(); });
 }
 </script>
 </body>
