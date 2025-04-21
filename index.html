@@ -173,51 +173,33 @@ function submitForm() {
 }
 
 function confirmSubmission() {
-  const btn = document.getElementById('confirmBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>處理中';
-
+  const btn=document.getElementById('confirmBtn'); btn.disabled=true; btn.innerHTML='<span class="spinner-border spinner-border-sm me-2" role="status"></span>處理中';
   fetch(`${GAS_URL}?action=submitReservation`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-  })
-  .then(res => res.text())
-  .then(msg => {
-    if (msg.includes('已經預約了')) {
-      document.getElementById('rebookMessage').innerText = msg;
-      new bootstrap.Modal(document.getElementById('rebookModal')).show();
-      btn.disabled = false;
-      btn.innerText = '確認';
-    } else {
-      alert(msg);
-      location.reload();
-    }
-  })
-  .catch(err => {
-    document.getElementById('error').innerText = err.message;
-  });
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    }), {method:'POST', body:JSON.stringify(formData)})
+    .then(r=>r.text()).then(msg=>{
+      if(msg.includes('已經預約了')) {
+        document.getElementById('rebookMessage').innerText=msg;
+        new bootstrap.Modal(document.getElementById('rebookModal')).show();
+        btn.disabled=false; btn.innerText='確認';
+      } else { alert(msg); location.reload(); }
+    }).catch(e=> document.getElementById('error').innerText=e.message);
 }
 
 function confirmRebook() {
   const btn = document.getElementById('rebookBtn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>處理中';
-
   fetch(`${GAS_URL}?action=forceRebook`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(formData)
-  })
-  .then(res => res.text())
-  .then(msg => {
-    alert(msg);
-    location.reload();
-  })
-  .catch(err => {
-    document.getElementById('error').innerText = err.message;
-  });
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    }), {method:'POST', body:JSON.stringify(formData)})
+    .then(r=>r.text()).then(msg=>{ alert(msg); location.reload(); });
 }
 </script>
 </body>
 </html>
+
