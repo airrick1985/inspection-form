@@ -49,36 +49,24 @@
         <option value="" disabled selected>請先選擇棟別</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label for="address" class="form-label">門牌</label>
-      <input type="text" id="address" class="form-control" readonly>
-    </div>
-    <div class="mb-3">
-      <label for="batch" class="form-label">驗屋批次</label>
-      <input type="text" id="batch" class="form-control" readonly>
-    </div>
-    <div class="mb-3">
-      <label for="name" class="form-label">姓名</label>
-      <input type="text" id="name" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="phone" class="form-label">電話</label>
-      <input type="text" id="phone" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="email" class="form-label">EMAIL</label>
-      <input type="email" id="email" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="inspectionType" class="form-label">驗屋階段</label>
+    <div class="mb-3"><label for="address" class="form-label">門牌</label>
+      <input type="text" id="address" class="form-control" readonly></div>
+    <div class="mb-3"><label for="batch" class="form-label">驗屋批次</label>
+      <input type="text" id="batch" class="form-control" readonly></div>
+    <div class="mb-3"><label for="name" class="form-label">姓名</label>
+      <input type="text" id="name" class="form-control"></div>
+    <div class="mb-3"><label for="phone" class="form-label">電話</label>
+      <input type="text" id="phone" class="form-control"></div>
+    <div class="mb-3"><label for="email" class="form-label">EMAIL</label>
+      <input type="email" id="email" class="form-control"></div>
+    <div class="mb-3"><label for="inspectionType" class="form-label">驗屋階段</label>
       <select id="inspectionType" class="form-select">
         <option value="" disabled selected>請選擇</option>
         <option value="初驗">初驗</option>
         <option value="複驗">複驗</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label for="inspectionMethod" class="form-label">驗屋方式</label>
+    <div class="mb-3"><label for="inspectionMethod" class="form-label">驗屋方式</label>
       <select id="inspectionMethod" class="form-select">
         <option value="" disabled selected>請選擇</option>
         <option value="屋主自驗">屋主自驗</option>
@@ -87,37 +75,98 @@
         <option value="授權驗屋">授權驗屋</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label for="agencyName" class="form-label">代驗公司名稱</label>
-      <input type="text" id="agencyName" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="trusteeName" class="form-label">受託人姓名</label>
-      <input type="text" id="trusteeName" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="trusteePhone" class="form-label">受託人電話</label>
-      <input type="text" id="trusteePhone" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="date" class="form-label">預約日期</label>
-      <input type="text" id="date" class="form-control">
-    </div>
-    <div class="mb-3">
-      <label for="timeslot" class="form-label">預約時段</label>
+    <div class="mb-3"><label for="agencyName" class="form-label">代驗公司名稱</label>
+      <input type="text" id="agencyName" class="form-control"></div>
+    <div class="mb-3"><label for="trusteeName" class="form-label">受託人姓名</label>
+      <input type="text" id="trusteeName" class="form-control"></div>
+    <div class="mb-3"><label for="trusteePhone" class="form-label">受託人電話</label>
+      <input type="text" id="trusteePhone" class="form-control"></div>
+    <div class="mb-3"><label for="date" class="form-label">預約日期</label>
+      <input type="text" id="date" class="form-control"></div>
+    <div class="mb-3"><label for="timeslot" class="form-label">預約時段</label>
       <select id="timeslot" class="form-select">
         <option value="" disabled selected>請先選擇日期</option>
       </select>
     </div>
-    <div class="mb-3">
-      <label for="notes" class="form-label">備註</label>
-      <textarea id="notes" class="form-control" rows="3"></textarea>
-    </div>
+    <div class="mb-3"><label for="notes" class="form-label">備註</label>
+      <textarea id="notes" class="form-control" rows="3"></textarea></div>
     <div class="mb-3 text-end">
       <button class="btn btn-success" onclick="submitForm()">送出</button>
     </div>
     <div id="error" class="text-danger"></div>
   </div>
 </div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbx1zjOuIhqSp5BfQptn43EaLcgP-2Aa8I9FCBDRyOt1NDwdfv4RxedKMWSmaUgjY9FQ8w/exec";
+
+let allUnitOptions = {};
+
+fetch(GAS_URL + "?action=getAllUnitOptions")
+  .then(res => res.json())
+  .then(data => {
+    allUnitOptions = data;
+    const buildingSelect = document.getElementById('building');
+    buildingSelect.innerHTML = '<option value="" disabled selected>請選擇棟別</option>';
+    Object.keys(data).sort().forEach(b => {
+      buildingSelect.innerHTML += `<option value="${b}">${b}</option>`;
+    });
+  });
+
+function loadUnitOptions() {
+  const building = document.getElementById('building').value;
+  const unitSelect = document.getElementById('unit');
+  unitSelect.innerHTML = '<option value="" disabled selected>請選擇戶別</option>';
+  if (allUnitOptions[building]) {
+    allUnitOptions[building].forEach(unit => {
+      unitSelect.innerHTML += `<option value="${unit}">${unit}</option>`;
+    });
+  }
+}
+
+function loadDefaultData() {
+  const unit = document.getElementById('unit').value;
+  if (!unit) return;
+  fetch(GAS_URL + "?action=getDefaultData&unit=" + unit)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('batch').value = data.batch;
+      document.getElementById('name').value = data.name;
+      document.getElementById('phone').value = data.phone;
+      document.getElementById('address').value = data.address;
+    });
+}
+
+function submitForm() {
+  const formData = {
+    building: document.getElementById('building').value,
+    unit: document.getElementById('unit').value,
+    batch: document.getElementById('batch').value,
+    name: document.getElementById('name').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    inspectionType: document.getElementById('inspectionType').value,
+    inspectionMethod: document.getElementById('inspectionMethod').value,
+    agencyName: document.getElementById('agencyName').value,
+    trusteeName: document.getElementById('trusteeName').value,
+    trusteePhone: document.getElementById('trusteePhone').value,
+    date: document.getElementById('date').value,
+    timeslot: document.getElementById('timeslot').value,
+    notes: document.getElementById('notes').value
+  };
+
+  fetch(GAS_URL + "?action=submitReservation", {
+    method: "POST",
+    body: JSON.stringify(formData)
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+  })
+  .catch(err => {
+    document.getElementById('error').innerText = err.message;
+  });
+}
+</script>
 </body>
 </html>
